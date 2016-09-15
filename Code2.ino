@@ -392,55 +392,67 @@ boolean isCorrectPassword(String inputPassword, String password) {
 // lock the door after certain amount of time (defined by LOCK_HOLD_TIME)
 ////////////////////////////////////////////////////////////////////////////////
 void lockRelease() {
-		
 	DEBUG_PRINTLN("Lock released.");
 	lcd.clear(); 
-	lcd.print("Lock released.");   
+	lcd.print("Lock released."); 
+
 	digitalWrite(DOOR_LOCK_PIN, HIGH);  // release door lock
 	digitalWrite(LED, HIGH);
 	playOKTone();
-	delay(30);
+	delay(3000);  
 	mp3_loop(1);
 	
 	while (true){ 
 		print_date_time();
-		if(keypad.getKeys()==false){
-			if(echo() == false){
-	    		mp3_loop(0);
-	    		break;// Box off the sound off
-	    	}
-		}
-		if(keypad.getKeys()==true){
-			char key = keypad.getKey();
-			if(key == 'A')
+		char key = keypad.getKey(); 
+		Serial.println(key);
+		if (key != NO_KEY){           //if press a key
+			Serial.println(key);
+			if(key == 'A'){
 				beep();
+				Serial.println("beep");
 				delay(30);
 				mp3_prev ();
-			if(key == 'B')
+				Serial.println("pre");
+			}
+			if(key == 'B'){
 				beep();
+				Serial.println("beep");
 				delay(30);
 				mp3_next ();
-			if(key == 'C')
+				Serial.println("mp3_next");
+			}
+			if(key == 'C'){
 			    beep();
+			    Serial.println("beep");
 				delay(30);
 				mp3_increase_volume();
-			if(key == 'D')
+				Serial.println("-v");
+			}
+			if(key == 'D'){
 				beep();
+				Serial.println("beep");
 				delay(30);
 				mp3_decrease_volume();
+				Serial.println("+v");
+	    	}
+	    }
+		else{
 			if(echo() == false){
 	    		mp3_loop(0);
 	    		break;// Box off the sound off
 	    	}
 		}
 	}
-
 	// timer0_overflow_count = 0; //reset timer0 in order to prevent timer overflow after 49 days
-  
+
 	digitalWrite(DOOR_LOCK_PIN, LOW); // lock the door 
 	digitalWrite(LED, LOW); 
 	playTimeOutTone();
 }
+		
+	
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -679,12 +691,12 @@ boolean echo(){
 	int distance = pulseIn(ECHO_PIN, HIGH); // Readout pulse time
 	distance= distance/58; // The pulse time is converted to distance (unit: cm)
 	Serial.println(distance); //Output distance
-	delay(70);
-	if (distance >=3){//If the distance is greater than 3 cm lights up
-		Serial.println(">3");
+	delay(60);
+	if (distance >=11){//If the distance is greater than 3 cm lights up
+		Serial.println(">11");
 		return true;
 	}else{
-		Serial.println("<3");
+		Serial.println("<11");
 		return false;
 	}
 }
